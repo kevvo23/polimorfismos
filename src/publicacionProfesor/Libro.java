@@ -1,7 +1,5 @@
 package publicacionProfesor;
 
-import java.time.LocalDate;
-
 public class Libro extends Publicacion{
 	private int isbn;
 	private boolean premiado;
@@ -12,7 +10,7 @@ public class Libro extends Publicacion{
 		this.premiado= false;
 	}
 	
-	public Libro(LocalDate fp, String t, int i, boolean p) {
+	public Libro(String fp, String t, int i, boolean p) {
 		super(fp, t);
 		this.isbn=i;
 		this.premiado=p;

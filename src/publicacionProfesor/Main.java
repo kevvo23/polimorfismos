@@ -1,9 +1,7 @@
 package publicacionProfesor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
-
-import electrica_s.a.Empleados;
-import electrica_s.a.Jefes;
 public class Main {
 
 	public static void main(String[] args) {
@@ -19,23 +17,35 @@ public class Main {
 				introducir(a, sc);
 				break;
 			case 2:
-				/*if (a.size()>0) {
-					visualizar (a);
+				if (!a.isEmpty()) {
+					añadirPublicacion(a, sc);
 				}else {
-					System.out.println("\nNo hay empleados introducidos.\n");
-				}*/
+					System.out.println("\nNo hay profesores introducidos.\n");
+				}
 				break;
 			case 3:
-				
+				if (!a.isEmpty()) {
+					mostrarLibrosPremiados(a, sc);
+				}else {
+					System.out.println("\nNo hay profesores introducidos.\n");
+				}
 				break;
 			case 4:
-				
+				if (!a.isEmpty()) {
+					listadoPorDepartamento(a, sc);
+				}else {
+					System.out.println("\nNo hay profesores introducidos.\n");
+				}
 				break;
 			case 5:
-				
+				if (!a.isEmpty()) {
+					listadoProfes (a);
+				}else {
+					System.out.println("\nNo hay profesores introducidos.\n");
+				}
 				break;
 			case 6:
-				
+				System.out.println("Hasta luego!");
 				break;
 
 			default: 
@@ -59,54 +69,220 @@ public class Main {
 		menu = sc.nextInt();
 		return menu;
 	}
-	
+
 	public static void introducir(ArrayList <Profesor> a, Scanner sc) {
 		String email;
-		boolean existe=false;
-		
+		Profesor profesor = null;
+
 		System.out.println("\nIntroduce los datos del profesor:");
-		
+
 		do {
 			System.out.print("Email: ");
 			email = sc.next();
 			if (!validarEmail(email)) {
 				System.out.println("ERROR! Formato no valido");
 			}
-		} while (!validarEmail(email) || existe);
-		
-		existe=buscarEmail(a, email);
-		
-		if (!existe) {
-			System.out.print("Nombre: ");
-			sc.nextLine();
-			String nombre = sc.nextLine();
-	
-			System.out.print("Departamento: ");
-			String departamento = sc.next();
-			
-			Profesor nuevo = new Profesor(email, nombre, departamento, null);
-			a.add(nuevo);
-			System.out.println("\nProfesor añadido correctamente.");
-		}
-		
-		System.out.println("\nRegresando al menu...\n");
-	}
-	
-	public static boolean validarEmail(String email) {
-	    // Regex para validar el formato del email
-	    String regex = "^[a-zA-Z0-9._]+@[a-zA-Z]+\\.[a-zA-Z]+$";
-	    return email.matches(regex);
-	}
-	
-	public static boolean buscarEmail(ArrayList <Profesor> a, String email) {
-		boolean existe=false;
-		for (int i=0; i<a.size() && !existe; i++) {
-			if (a.get(i).getEmail().equalsIgnoreCase(email)) {
-				existe=true;
+			else{
+				profesor =buscarEmail(a, email);
+			}
+			if (profesor!=null) {
 				System.out.println("ERROR! Ese email ya existe.");
 			}
+		} while (!validarEmail(email) || profesor!=null);
+
+		System.out.print("Nombre: ");
+		sc.nextLine();
+		String nombre = sc.nextLine();
+
+		System.out.print("Departamento: ");
+		String departamento = sc.next();
+
+		Profesor nuevo = new Profesor(email, nombre, departamento);
+		a.add(nuevo);
+		System.out.println("\nProfesor añadido correctamente.");
+
+		System.out.println("\nRegresando al menu...\n");
+	}
+
+	public static boolean validarEmail(String email) {
+		// Regex para validar el formato del email
+		String regex = "^[a-zA-Z0-9._]+@[a-zA-Z]+\\.[a-zA-Z]+$";
+		return email.matches(regex);
+	}
+
+	public static Profesor buscarEmail(ArrayList <Profesor> a, String email) {
+		for (Profesor profesor : a) {
+			if (profesor.getEmail().equalsIgnoreCase(email)) {
+				return profesor;
+			}
+		}
+		return null;
+	}
+
+	public static void añadirPublicacion(ArrayList <Profesor> a, Scanner sc) {
+		String email, respuesta, tipo;
+		Profesor profesor = null;
+
+		do {
+			System.out.println("\nIntroduce el email del profesor: ");
+			email=sc.next();
+			if (!validarEmail(email)) {
+				System.out.println("ERROR! Formto incorrecto");
+			}
+			else {
+				profesor=buscarEmail(a,email);
+				if (profesor==null) {
+					System.out.println("ERROR! Email inexistente.");
+				}
+			}
+		} while (!validarEmail(email));
+
+		do {
+			System.out.println("\n" + profesor.toString());
+
+			do {
+				System.out.println("\nLa publicacion es un libro o un articulo? ");
+				tipo=sc.next();
+				if (!tipo.equalsIgnoreCase("libro") && !tipo.equalsIgnoreCase("articulo")) {
+					System.out.println("ERROR!");
+				}
+			} while (!tipo.equalsIgnoreCase("libro") && !tipo.equalsIgnoreCase("articulo"));
+
+			if (tipo.equalsIgnoreCase("libro")) {
+				profesor.getPublicaciones().add(añadirLibro(sc));
+			}
+			else {
+				profesor.getPublicaciones().add(añadirArticulo(sc));
+			}
+
+			do {
+				System.out.println("\nDeseas añadir mas publicaciones a este mismo profesor? (SI/NO)");
+				respuesta=sc.next();
+				if (!respuesta.equalsIgnoreCase("si") && !respuesta.equalsIgnoreCase("no")) {
+					System.out.println("ERROR!");
+				}
+			} while (!respuesta.equalsIgnoreCase("si") && !respuesta.equalsIgnoreCase("no"));
+		} while (respuesta.equalsIgnoreCase("si"));
+
+		System.out.println("\nRegresadno al menu...\n");
+	}
+
+	public static Publicacion añadirLibro (Scanner sc) {
+		String respuesta;
+		boolean premiado;
+
+		System.out.println("\nIntroduce los datos del libro:");
+
+		System.out.print("\nAño de publicación: ");
+		String fecha = sc.next();
+
+		System.out.print("\nTítulo: ");
+		sc.nextLine();
+		String titulo = sc.nextLine();
+
+		System.out.print("\nISBN: ");
+		int isbn = sc.nextInt();
+
+		do {
+			System.out.print("\n¿El libro ha sido premiado? (S/N): ");
+			respuesta=sc.next();
+			if (!respuesta.equalsIgnoreCase("si") && !respuesta.equalsIgnoreCase("no")) {
+				System.out.println("ERROR!");
+			}
+		} while (!respuesta.equalsIgnoreCase("si") && !respuesta.equalsIgnoreCase("no"));
+
+		if (respuesta.equalsIgnoreCase("si")) {
+			premiado=true;
+		}
+		else {
+			premiado=false;
+		}
+
+		return new Libro(fecha, titulo, isbn, premiado);
+	}
+
+	public static Publicacion añadirArticulo (Scanner sc) {
+
+		System.out.println("\nIntroduce los datos del articulo:");
+
+		System.out.print("\nAño de publicación: ");
+		String fecha = sc.next();
+
+		System.out.print("\nTítulo: ");
+		sc.nextLine();
+		String titulo = sc.nextLine();
+
+		System.out.print("\nMedio de publicacion: ");
+		String medio = sc.next();
+
+		return new Articulo(fecha, titulo, medio);
+
+	}
+
+	public static void mostrarLibrosPremiados (ArrayList <Profesor> a, Scanner sc) {
+		String año;
+
+		System.out.println("Introduzca el año del que quiera ver los libros premiados:");
+		año = sc.next();
+		for (Profesor p:a) {
+			for (int i=0;i<p.getPublicaciones().size();i++) {
+				if (p.getPublicaciones().get(i) instanceof Libro) {
+					if (p.getPublicaciones().get(i).getFecha_publicacion().equalsIgnoreCase(año)) {
+						if (((Libro)(p.getPublicaciones().get(i))).isPremiado()) {
+							System.out.println();
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	public static void listadoPorDepartamento (ArrayList <Profesor> a, Scanner sc) {
+		int esta=0;
+		ArrayList <Listado4> listaDepar=new ArrayList <Listado4>();
+
+		for (Profesor p: a){
+			esta=0;
+			// Recorremos los departamentos con publicaciones que se han ido encontrando
+			// Para el primer profe que se lea, aún no hay
+			for(int i=0; i<listaDepar.size()&& esta==0;i++){
+				if (listaDepar.get(i).getDepar().equalsIgnoreCase(p.getDepartamento())){
+					esta=1;
+					if (listaDepar.get(i).getNum()< p.getPublicaciones().size()){
+						listaDepar.get(i).setNombreProfe(p.getNombre());
+						listaDepar.get(i).setNum(p.getPublicaciones().size());
+					}//if de que ha encontrado a otro profe de ese departamento con más publicaciones
+				}//if de que estamos analizando a un profe que es de un departamento que tenemos en lista
+			}//for que recorre los departamentos que vamos apuntando en el listado que pretendemos generar
+			//NO HA ENCONTRADO ESE DEPARTAMENTO, si tiene publicaciones, lo añadimos
+			if (esta==0){
+				if (p.getPublicaciones().size()>0){
+					Listado4 aux=new Listado4();
+					aux.setDepar(p.getDepartamento());
+					aux.setNombreProfe(p.getNombre());
+					aux.setNum(p.getPublicaciones().size());
+					listaDepar.add(aux);
+				}//Hemos encontrado un departamento nuevo pero solo nos interesa si tiene publicaciones
+			}//if esta==0, no está registrado ese departamento
+		}//for que ha ido recorriendo a todos los profes
+		if (listaDepar.size()>0){
+			Collections.sort(listaDepar);
+			System.out.println("Nombre departamento Nombre profesor Número de publicaciones");
+			for(int i=0;i<listaDepar.size();i++){
+				System.out.println(listaDepar.get(i).getDepar()+" "+listaDepar.get(i).getNombreProfe()+" "+listaDepar.get(i).getNum());
+			}
+		}
+		else{
+			System.out.println("Aún no hay publicaciones de ningún profesor por lo que no hay listado");
 		}
 		
-		return existe;
+		System.out.println("\nVolviendo al menu...\n");
+	}
+
+	public static void listadoProfes (ArrayList <Profesor> a) {
+		for (Profesor p:a) {
+			System.out.println(p.toString());
+		}
 	}
 }

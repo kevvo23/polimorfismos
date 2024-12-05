@@ -1,7 +1,5 @@
 package publicacionProfesor;
 
-import java.time.LocalDate;
-
 public class Articulo extends Publicacion{
 	private String medio;
 	
@@ -10,7 +8,7 @@ public class Articulo extends Publicacion{
 		this.medio="";
 	}
 	
-	public Articulo(LocalDate fp, String t, String m) {
+	public Articulo(String fp, String t, String m) {
 		super(fp, t);
 		this.medio=m;
 	}

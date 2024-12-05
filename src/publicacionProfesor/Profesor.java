@@ -2,24 +2,24 @@ package publicacionProfesor;
 
 import java.util.ArrayList;
 
-public class Profesor {
+public class Profesor{
 	private String email;
 	private String nombre;
 	private String departamento;
-	private ArrayList<Publicacion> p;
+	private ArrayList<Publicacion> publicaciones;
 	
 	public Profesor() {
 		this.email="";
 		this.nombre="";
 		this.departamento="";
-		this.p= new ArrayList<>();
+		this.publicaciones= new ArrayList<>();
 	}
 	
-	public Profesor(String e, String n, String d, ArrayList<Publicacion> pub) {
+	public Profesor(String e, String n, String d) {
 		this.email= e;
 		this.nombre= n;
 		this.departamento= d;
-		this.p= pub;
+		this.publicaciones= new ArrayList<>();;
 	}
 
 	public String getEmail() {
@@ -46,16 +46,16 @@ public class Profesor {
 		this.departamento = departamento;
 	}
 
-	public ArrayList<Publicacion> getP() {
-		return p;
+	public ArrayList<Publicacion> getPublicaciones() {
+		return publicaciones;
 	}
 
-	public void setP(ArrayList<Publicacion> p) {
-		this.p = p;
+	public void setPublicaciones(ArrayList<Publicacion> publicaciones) {
+		this.publicaciones = publicaciones;
 	}
 
 	@Override
 	public String toString() {
-		return "Profesor [email=" + email + ", nombre=" + nombre + ", departamento=" + departamento + ", p=" + p + "]";
+		return "Profesor [email=" + email + ", nombre=" + nombre + ", departamento=" + departamento + ", publicaciones=" + publicaciones + "]";
 	}
 }

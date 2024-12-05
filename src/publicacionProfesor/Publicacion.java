@@ -1,26 +1,24 @@
 package publicacionProfesor;
 
-import java.time.LocalDate;
-
 public class Publicacion {
-	protected LocalDate fecha_publicacion;
+	protected String fecha_publicacion;
 	protected String titulo;
 	
 	public Publicacion() {
-		this.fecha_publicacion= null;
+		this.fecha_publicacion= "";
 		this.titulo="";
 	}
 	
-	public Publicacion(LocalDate fp, String t) {
+	public Publicacion(String fp, String t) {
 		this.fecha_publicacion= fp;
 		this.titulo=t;
 	}
 
-	public LocalDate getFecha_publicacion() {
+	public String getFecha_publicacion() {
 		return fecha_publicacion;
 	}
 
-	public void setFecha_publicacion(LocalDate fecha_publicacion) {
+	public void setFecha_publicacion(String fecha_publicacion) {
 		this.fecha_publicacion = fecha_publicacion;
 	}
 
